@@ -19,16 +19,18 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progress;
     private EditText nameInput;
     private TextView userName;
+    private TextView sex;
     private ImageView avatar;
     private Button getButton;
+    private View userContainer;
 
     private ListenerHandler<Api.OnUserGetListener> userHandler;
 
     private Api.OnUserGetListener userListener = new Api.OnUserGetListener() {
         @Override
         public void onUserSuccess(final VkUser user) {
-            stopProgress();
             setUser(user);
+            stopProgress();
         }
 
         @Override
@@ -48,8 +50,10 @@ public class MainActivity extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         nameInput = findViewById(R.id.user_name_input);
         userName = findViewById(R.id.user_name);
+        sex = findViewById(R.id.user_sex);
         avatar = findViewById(R.id.user_avatar);
         getButton = findViewById(R.id.user_get);
+        userContainer = findViewById(R.id.user_container);
 
         getButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
         }
+        sex.setText(String.valueOf(user.getSex()));
 
         avatar.setImageDrawable(null);
         if (!TextUtils.isEmpty(user.getAvatar())) {
@@ -88,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void startProgress() {
         progress.setVisibility(View.VISIBLE);
+        userContainer.setVisibility(View.INVISIBLE);
         getButton.setEnabled(false);
     }
 
     private void stopProgress() {
         progress.setVisibility(View.INVISIBLE);
+        userContainer.setVisibility(View.VISIBLE);
         getButton.setEnabled(true);
     }
 }

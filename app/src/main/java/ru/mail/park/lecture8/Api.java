@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class Api {
@@ -44,11 +44,11 @@ public class Api {
             @Override
             public void run() {
                 try {
-                    try (final Response response = service.getUser(name).execute().raw()) {
-                        if (response.code() != 200) {
-                            throw new IOException("HTTP code " + response.code());
-                        }
-                        final ResponseBody responseBody = response.body();
+                    final Response<ResponseBody> response = service.getUser(name).execute();
+                    if (response.code() != 200) {
+                        throw new IOException("HTTP code " + response.code());
+                    }
+                    try (final ResponseBody responseBody = response.body()) {
                         if (responseBody == null) {
                             throw new IOException("Cannot get body");
                         }
