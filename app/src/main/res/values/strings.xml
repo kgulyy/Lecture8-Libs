@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Lecture8-Libs</string>
+    <string name="user_name_hint">User name or id</string>
+    <string name="get_user">Get User</string>
+</resources>
