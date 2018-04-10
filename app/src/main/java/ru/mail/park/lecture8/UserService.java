@@ -5,7 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-public interface TechnoparkService {
+public interface UserService {
     @GET("user.get/{name}")
     Call<ResponseBody> getUser(@Path("name") String name);
 }

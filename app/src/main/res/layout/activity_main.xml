@@ -14,13 +14,26 @@
         android:hint="@string/user_name_hint"
         android:inputType="text" />
 
-    <Button
-        android:id="@+id/user_get"
-        style="@style/Widget.AppCompat.Button.Colored"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/get_user" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/group_get"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/get_group" />
+        <Button
+            android:id="@+id/user_get"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/get_user" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
