@@ -6,7 +6,7 @@ public class VkUser {
     private String lastName = "";
     private String screenName = "";
     private String avatar = "";
-    private int sex = 0;
+    private Sex sex = Sex.UNKNOWN;
 
     public String getFirstName() {
         return firstName;
@@ -24,7 +24,7 @@ public class VkUser {
         return avatar;
     }
 
-    public int getSex() {
+    public Sex getSex() {
         return sex;
     }
 }

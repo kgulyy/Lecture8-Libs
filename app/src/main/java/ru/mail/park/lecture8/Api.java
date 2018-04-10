@@ -19,7 +19,9 @@ import retrofit2.Retrofit;
 public class Api {
     private static final Api INSTANCE = new Api();
 
-    private static final Gson GSON = new GsonBuilder().create();
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Sex.class, new SexAdapter())
+            .create();
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 

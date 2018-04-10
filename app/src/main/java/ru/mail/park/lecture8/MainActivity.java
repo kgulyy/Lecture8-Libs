@@ -1,10 +1,12 @@
 package ru.mail.park.lecture8;
 
+import android.content.Context;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(final View view) {
                 startProgress();
+                hideKeyboard(nameInput);
                 if (userHandler != null) {
                     userHandler.unregister();
                 }
@@ -101,5 +104,12 @@ public class MainActivity extends AppCompatActivity {
         progress.setVisibility(View.INVISIBLE);
         userContainer.setVisibility(View.VISIBLE);
         getButton.setEnabled(true);
+    }
+
+    private static void hideKeyboard(final View input) {
+        final InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            inputMethodManager.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        }
     }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,14 +11,16 @@
         android:id="@+id/user_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/user_name_hint"/>
+        android:hint="@string/user_name_hint"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/user_get"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/get_user"/>
+        android:text="@string/get_user" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -35,18 +36,24 @@
 
             <TextView
                 android:id="@+id/user_name"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                tools:text="Here will be name" />
 
             <TextView
                 android:id="@+id/user_sex"
+                style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="MALE" />
 
             <ImageView
                 android:id="@+id/user_avatar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <ProgressBar
@@ -55,6 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
     </FrameLayout>
 </LinearLayout>
