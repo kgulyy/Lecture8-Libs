@@ -36,31 +36,31 @@ public class MainActivity extends AppCompatActivity {
     private Button getGroupButton;
     private View userContainer;
 
-    private ListenerHandler<Api.OnUserGetListener> userHandler;
-    private ListenerHandler<Api.OnGroupGetListener> groupHandler;
+    private ListenerHandler<Api.OnGetListener<VkUser>> userHandler;
+    private ListenerHandler<Api.OnGetListener<VkGroup>> groupHandler;
 
-    private Api.OnUserGetListener userListener = new Api.OnUserGetListener() {
+    private Api.OnGetListener<VkUser> userListener = new Api.OnGetListener<VkUser>() {
         @Override
-        public void onUserSuccess(final VkUser user) {
+        public void onSuccess(final VkUser user) {
             setUser(user);
             stopProgress();
         }
 
         @Override
-        public void onUserError(final Exception error) {
+        public void onError(final Exception error) {
             stopProgress();
             Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };
 
-    private Api.OnGroupGetListener groupListener = new Api.OnGroupGetListener() {
+    private Api.OnGetListener<VkGroup> groupListener = new Api.OnGetListener<VkGroup>() {
         @Override
-        public void onGroupSuccess(VkGroup group) {
+        public void onSuccess(VkGroup group) {
             sortAndPrintGroupUsers(group);
         }
 
         @Override
-        public void onGroupError(Exception error) {
+        public void onError(Exception error) {
             Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };

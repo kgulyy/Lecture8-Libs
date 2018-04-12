@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import ru.mail.park.lecture8.task.BooleanTypeAdapter;
@@ -52,23 +53,14 @@ public class Api {
         return INSTANCE;
     }
 
-    public ListenerHandler<OnUserGetListener> getUser(final String name, final OnUserGetListener listener) {
-        final ListenerHandler<OnUserGetListener> handler = new ListenerHandler<>(listener);
+    public ListenerHandler<OnGetListener<VkUser>> getUser(final String name, final OnGetListener<VkUser> listener) {
+        final ListenerHandler<OnGetListener<VkUser>> handler = new ListenerHandler<>(listener);
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Response<ResponseBody> response = userService.getUser(name).execute();
-                    if (response.code() != 200) {
-                        throw new IOException("HTTP code " + response.code());
-                    }
-                    try (final ResponseBody responseBody = response.body()) {
-                        if (responseBody == null) {
-                            throw new IOException("Cannot get body");
-                        }
-                        final String body = responseBody.string();
-                        invokeSuccess(handler, parseUser(body));
-                    }
+                    final String body = executeCall(userService.getUser(name));
+                    invokeSuccess(handler, parseUser(body));
                 } catch (IOException e) {
                     invokeError(handler, e);
                 }
@@ -77,39 +69,43 @@ public class Api {
         return handler;
     }
 
-    public ListenerHandler<OnGroupGetListener> getGroup(final int id, final OnGroupGetListener listener) {
-        final ListenerHandler<OnGroupGetListener> handler = new ListenerHandler<>(listener);
+    public ListenerHandler<OnGetListener<VkGroup>> getGroup(final int id, final OnGetListener<VkGroup> listener) {
+        final ListenerHandler<OnGetListener<VkGroup>> handler = new ListenerHandler<>(listener);
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Response<ResponseBody> response = groupService.getGroup(id).execute();
-                    if (response.code() != 200) {
-                        throw new IOException("HTTP code " + response.code());
-                    }
-                    try (final ResponseBody responseBody = response.body()) {
-                        if (responseBody == null) {
-                            throw new IOException("Cannot get body");
-                        }
-                        final String body = responseBody.string();
-                        invokeSuccess(handler, parseGroup(body));
-                    }
+                    final String body = executeCall(groupService.getGroup(id));
+                    invokeSuccess(handler, parseGroup(body));
                 } catch (IOException e) {
-                    invokeError(handler, e, 0);
+                    invokeError(handler, e);
                 }
             }
         });
         return handler;
     }
 
-    private void invokeSuccess(final ListenerHandler<OnUserGetListener> handler, final VkUser user) {
+    private String executeCall(final Call<ResponseBody> call) throws IOException {
+        final Response<ResponseBody> response = call.execute();
+        try (final ResponseBody responseBody = response.body()) {
+            if (response.code() != 200) {
+                throw new IOException("HTTP code " + response.code());
+            }
+            if (responseBody == null) {
+                throw new IOException("Cannot get body");
+            }
+            return responseBody.string();
+        }
+    }
+
+    private <T> void invokeSuccess(final ListenerHandler<OnGetListener<T>> handler, final T user) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                OnUserGetListener listener = handler.getListener();
+                OnGetListener<T> listener = handler.getListener();
                 if (listener != null) {
                     Log.d("API", "listener NOT null");
-                    listener.onUserSuccess(user);
+                    listener.onSuccess(user);
                 } else {
                     Log.d("API", "listener is null");
                 }
@@ -117,44 +113,14 @@ public class Api {
         });
     }
 
-    private void invokeSuccess(final ListenerHandler<OnGroupGetListener> handler, final VkGroup group) {
+    private <T> void invokeError(final ListenerHandler<OnGetListener<T>> handler, final Exception error) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                OnGroupGetListener listener = handler.getListener();
+                OnGetListener<T> listener = handler.getListener();
                 if (listener != null) {
                     Log.d("API", "listener NOT null");
-                    listener.onGroupSuccess(group);
-                } else {
-                    Log.d("API", "listener is null");
-                }
-            }
-        });
-    }
-
-    private void invokeError(final ListenerHandler<OnUserGetListener> handler, final Exception error) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                OnUserGetListener listener = handler.getListener();
-                if (listener != null) {
-                    Log.d("API", "listener NOT null");
-                    listener.onUserError(error);
-                } else {
-                    Log.d("API", "listener is null");
-                }
-            }
-        });
-    }
-
-    private void invokeError(final ListenerHandler<OnGroupGetListener> handler, final Exception error, int trash) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                OnGroupGetListener listener = handler.getListener();
-                if (listener != null) {
-                    Log.d("API", "listener NOT null");
-                    listener.onGroupError(error);
+                    listener.onError(error);
                 } else {
                     Log.d("API", "listener is null");
                 }
@@ -178,15 +144,9 @@ public class Api {
         }
     }
 
-    public interface OnUserGetListener {
-        void onUserSuccess(final VkUser user);
+    public interface OnGetListener<T> {
+        void onSuccess(T res);
 
-        void onUserError(final Exception error);
-    }
-
-    public interface OnGroupGetListener {
-        void onGroupSuccess(final VkGroup group);
-
-        void onGroupError(final Exception error);
+        void onError(final Exception error);
     }
 }
